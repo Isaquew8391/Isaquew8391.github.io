@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Pedido Especial para a Beatriz 💙</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f8ff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(255,255,255,0.95);
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #4682b4;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.35em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #4682b4;
+            margin: 30px 0;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 16px 40px;
+            font-size: 1.3em;
+            border-radius: 30px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+        }
+
+        #yesButton {
+            background-color: #4682b4;
+            color: white;
+        }
+
+        #noButton {
+            background-color: #ff6347;
+            color: white;
+        }
+
+        .no-message {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ff6347;
+        }
+
+        /* Chuva */
+        .rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .drop {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(
+                to bottom,
+                rgba(173,216,230,0),
+                rgba(173,216,230,0.8)
+            );
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+
+        /* Corações */
+        .hearts {
+            position: relative;
+            height: 300px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -40px;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-320px); opacity: 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- CHUVA -->
+<div class="rain"></div>
+
+<!-- MÚSICA (arquivo local) -->
+<audio id="music" preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+    <h1>Minha Doce Beatriz,</h1>
+
+    <p>
+        Desde o momento em que te conheci, algo em mim mudou.
+        Meu mundo ficou mais leve, mais bonito e cheio de sentido.
+    </p>
+
+    <p>
+        Cada conversa, cada sorriso e cada detalhe seu
+        me fizeram ter certeza de que você é especial pra mim.
+    </p>
+
+    <p>
+        Estar ao seu lado me traz paz, alegria
+        e aquela sensação boa de que tudo fica melhor com você.
+    </p>
+
+    <h2>Você aceita namorar comigo?</h2>
+
+    <div class="buttons">
+        <button id="yesButton" onclick="handleYes()">SIM ❤️</button>
+        <button id="noButton" onclick="handleNo()">NÃO 😢</button>
+    </div>
+
+    <div class="no-message" id="noMessage">
+        Poxa… pensa com mais carinho, por favor 🥺💙
+    </div>
+</div>
+
+<script>
+    function handleYes() {
+        const music = document.getElementById("music");
+        music.volume = 0.6;
+        music.play();
+
+        document.querySelector(".container").innerHTML = `
+            <h1>💖 EU SABIA!!! 💖</h1>
+            <p style="font-size:1.6em; color:#4682b4;">
+                Você me fez a pessoa mais feliz do mundo ❤️
+            </p>
+            <div class="hearts"></div>
+        `;
+
+        createHearts();
+    }
+
+    function handleNo() {
+        document.getElementById("noMessage").style.display = "block";
+    }
+
+    function createHearts() {
+        const container = document.querySelector(".hearts");
+
+        for (let i = 0; i < 30; i++) {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerText = "❤️";
+            heart.style.left = Math.random() * 100 + "%";
+            heart.style.fontSize = (20 + Math.random() * 30) + "px";
+            heart.style.animationDuration = (2 + Math.random() * 2) + "s";
+            heart.style.animationDelay = Math.random() * 2 + "s";
+            container.appendChild(heart);
+        }
+    }
+
+    const rain = document.querySelector(".rain");
+    for (let i = 0; i < 120; i++) {
+        const drop = document.createElement("div");
+        drop.className = "drop";
+        drop.style.left = Math.random() * 100 + "vw";
+        drop.style.animationDuration = (0.7 + Math.random()) + "s";
+        drop.style.animationDelay = Math.random() * 5 + "s";
+        rain.appendChild(drop);
+    }
+</script>
+
+</body>
+</html>
