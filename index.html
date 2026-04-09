@@ -1,148 +1,117 @@
 <!DOCTYPE html><html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smoke</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smoke Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #1f1f2e;
-      color: white;
-    }header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  background-color: #2a2a3d;
-}
-
-header h1 {
-  color: #c084fc;
-}
-
-nav button {
-  margin-left: 10px;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #444;
-  color: white;
-  cursor: pointer;
-}
-
-nav button:hover {
-  background-color: #c084fc;
-}
-
-.container {
-  padding: 20px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.card {
-  background-color: #2a2a3d;
-  padding: 15px;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.card button {
-  margin-top: 10px;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background-color: #c084fc;
-  cursor: pointer;
-}
-
-.hidden {
-  display: none;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
+    body { margin:0; font-family:Poppins; background:#1f1f2e; color:white; }
+    header { display:flex; justify-content:space-between; padding:15px 30px; background:#2a2a3d; }
+    button { cursor:pointer; border:none; border-radius:8px; padding:8px 12px; }
+    .purple { background:#c084fc; color:white; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; padding:20px; }
+    .card { background:#2a2a3d; border-radius:15px; overflow:hidden; }
+    .card img { width:100%; height:120px; object-fit:cover; }
+    .card div { padding:10px; }
+    .hidden { display:none; }
+    .box { max-width:400px; margin:auto; padding:20px; }
   </style>
 </head>
 <body><header>
-  <h1>SMOKE</h1>
-  <nav>
-    <button onclick="showTab('store')">Loja</button>
-    <button onclick="showTab('library')">Biblioteca</button>
-    <button onclick="showTab('profile')">Perfil</button>
-  </nav>
-</header><div class="container">  <!-- Loja -->  <div id="store" class="tab">
-    <div class="grid" id="storeGames"></div>
-  </div>  <!-- Biblioteca -->  <div id="library" class="tab hidden">
-    <div class="grid" id="libraryGames"></div>
-  </div>  <!-- Perfil -->  <div id="profile" class="tab hidden">
-    <h2>Editar Perfil</h2>
-    <input type="text" id="username" value="Player1">
-    <button onclick="saveProfile()">Salvar</button>
-  </div></div><script>
-  const games = ["Cyber Drift", "Shadow Quest", "Neon War", "Pixel Souls"];
-  let library = ["Cyber Drift", "Shadow Quest"];
+  <h2>SMOKE PRO</h2>
+  <div id="userArea"></div>
+</header><div id="login" class="box">
+  <h3>Login</h3>
+  <input id="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Senha"><br><br>
+  <button class="purple" onclick="login()">Entrar</button>
+  <button onclick="register()">Criar Conta</button>
+</div><div id="app" class="hidden">
+  <h3 id="balance"></h3>
+  <div class="grid" id="store"></div>
+</div><script>
+let user = null;
 
-  function showTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.add('hidden'));
-    document.getElementById(tab).classList.remove('hidden');
-  }
+const games = [
+ {name:"Cyberpunk 2077",price:50,img:"https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg",rating:[]},
+ {name:"Elden Ring",price:70,img:"https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg",rating:[]}
+];
 
-  function renderStore() {
-    const storeDiv = document.getElementById('storeGames');
-    storeDiv.innerHTML = '';
+function saveUsers(users){ localStorage.setItem('users', JSON.stringify(users)); }
+function getUsers(){ return JSON.parse(localStorage.getItem('users'))||[]; }
 
-    games.forEach(game => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `
-        <h3>${game}</h3>
-        <button onclick="buyGame('${game}')">Comprar</button>
-      `;
-      storeDiv.appendChild(div);
-    });
-  }
+function register(){
+ let users = getUsers();
+ let email = emailInput();
+ let password = passInput();
+ users.push({email,password,balance:100,library:[]});
+ saveUsers(users);
+ alert('Conta criada!');
+}
 
-  function renderLibrary() {
-    const libDiv = document.getElementById('libraryGames');
-    libDiv.innerHTML = '';
+function login(){
+ let users = getUsers();
+ let email = emailInput();
+ let password = passInput();
+ user = users.find(u=>u.email===email && u.password===password);
+ if(user){
+   document.getElementById('login').classList.add('hidden');
+   document.getElementById('app').classList.remove('hidden');
+   render();
+ } else alert('Erro no login');
+}
 
-    library.forEach(game => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `
-        <h3>${game}</h3>
-        <button>Jogar</button>
-      `;
-      libDiv.appendChild(div);
-    });
-  }
+function emailInput(){ return document.getElementById('email').value; }
+function passInput(){ return document.getElementById('password').value; }
 
-  function buyGame(game) {
-    if (!library.includes(game)) {
-      library.push(game);
-      renderLibrary();
-      alert('Jogo comprado!');
-    }
-  }
+function render(){
+ document.getElementById('balance').innerText = 'Saldo: R$ '+user.balance;
+ document.getElementById('userArea').innerText = user.email;
 
-  function saveProfile() {
-    const name = document.getElementById('username').value;
-    alert('Perfil salvo como: ' + name);
-  }
+ let store = document.getElementById('store');
+ store.innerHTML='';
 
-  renderStore();
-  renderLibrary();
+ games.forEach(g=>{
+  let avg = g.rating.length ? (g.rating.reduce((a,b)=>a+b)/g.rating.length).toFixed(1) : 'Sem nota';
+  let div = document.createElement('div');
+  div.className='card';
+  div.innerHTML=`
+   <img src="${g.img}">
+   <div>
+     <h4>${g.name}</h4>
+     <p>R$ ${g.price}</p>
+     <p>⭐ ${avg}</p>
+     <button class="purple" onclick="buy('${g.name}')">Comprar</button>
+     <button onclick="rate('${g.name}')">Avaliar</button>
+   </div>
+  `;
+  store.appendChild(div);
+ });
+}
+
+function buy(name){
+ let g = games.find(x=>x.name===name);
+ if(user.balance >= g.price){
+   user.balance -= g.price;
+   user.library.push(name);
+   updateUser();
+   render();
+   alert('Compra feita!');
+ } else alert('Sem saldo');
+}
+
+function rate(name){
+ let nota = prompt('Nota 1-5');
+ let g = games.find(x=>x.name===name);
+ g.rating.push(Number(nota));
+ render();
+}
+
+function updateUser(){
+ let users = getUsers();
+ let i = users.findIndex(u=>u.email===user.email);
+ users[i]=user;
+ saveUsers(users);
+}
 </script></body>
 </html>
