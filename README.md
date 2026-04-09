@@ -1,1 +1,1 @@
-# Feito pro amor da minha vida 
+# Projeto feito exclusivamente para trabalho escolar
